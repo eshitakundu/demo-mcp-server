@@ -1,39 +1,46 @@
 # Demo MCP Server
 
-A lightweight demo server built with FastMCP for demonstration and testing purposes. This server implements the Model Context Protocol (MCP) and can be used with Claude and other compatible clients.
+A minimal [Model Context Protocol](https://modelcontextprotocol.io) server built with FastMCP: the smallest working example I use as a template before building larger servers ([study-buddy](https://github.com/eshitakundu/study-buddy), [flowchart-mcp-server](https://github.com/eshitakundu/flowchart-mcp-server), [hn-mcp-server](https://github.com/eshitakundu/hn-mcp-server), [github-ranker-remote-mcp-server](https://github.com/eshitakundu/github-ranker-remote-mcp-server)).
 
-## Quick Start
+## Tools
 
-### Prerequisites
+| Tool | Input | Returns |
+|---|---|---|
+| `greet` | `name: str` | A friendly greeting picked at random |
+| `get_timestamp` | none | Current time as ISO string, Unix timestamp, formatted date and weekday |
 
-- Python 3.12 or higher
-- pip or uv (for dependency management)
+Both tools use typed signatures and docstrings, which FastMCP turns into the tool schema and descriptions the client model sees.
 
-### Installation
+## Run it
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/demo-mcp-server.git
-   cd demo-mcp-server
-   ```
-
-2. **Create a virtual environment**
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   # Or with uv:
-   uv pip install -r requirements.txt
-   ```
-
-### Running the Server
+Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-mcp dev main.py
+git clone https://github.com/eshitakundu/demo-mcp-server.git
+cd demo-mcp-server
+uv sync
+
+uv run mcp dev main.py        # open the MCP Inspector to call the tools
+uv run python main.py         # or run over stdio
 ```
 
-The server will start and be ready to accept requests via the MCP protocol.
+## Use it in Claude Desktop
+
+Add this to `claude_desktop_config.json` (Settings → Developer → Edit config), with the path to your clone:
+
+```json
+{
+  "mcpServers": {
+    "demo": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/demo-mcp-server", "python", "main.py"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop, then ask it to greet you or tell you the time.
+
+## Stack
+
+Python · FastMCP · MCP Python SDK · uv
